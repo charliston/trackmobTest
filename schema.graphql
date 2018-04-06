@@ -1,0 +1,591 @@
+type AddToProductCategoriesPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  productsProduct: Product
+  categoryCategory: Category
+  productsProductEdge: ProductEdge
+  categoryCategoryEdge: CategoryEdge
+}
+
+input AddToProductCategoriesProductInput {
+  categoryCategoryId: ID!
+  productsProductId: ID!
+  clientMutationId: String!
+}
+
+type Category implements Node {
+  id: ID!
+  products(filter: ProductFilter, orderBy: ProductOrderBy, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection
+  title: String!
+}
+
+# A connection to a list of items.
+type CategoryConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [CategoryEdge]
+
+  # Count of filtered result set without considering pagination arguments
+  count: Int!
+}
+
+# An edge in a connection.
+type CategoryEdge {
+  # The item at the end of the edge.
+  node: Category!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+input CategoryFilter {
+  # Logical AND on all given filters.
+  AND: [CategoryFilter!]
+
+  # Logical OR on all given filters.
+  OR: [CategoryFilter!]
+  id: ID
+
+  # All values that are not equal to given value.
+  id_not: ID
+
+  # All values that are contained in given list.
+  id_in: [ID!]
+
+  # All values that are not contained in given list.
+  id_not_in: [ID!]
+
+  # All values less than the given value.
+  id_lt: ID
+
+  # All values less than or equal the given value.
+  id_lte: ID
+
+  # All values greater than the given value.
+  id_gt: ID
+
+  # All values greater than or equal the given value.
+  id_gte: ID
+
+  # All values containing the given string.
+  id_contains: ID
+
+  # All values not containing the given string.
+  id_not_contains: ID
+
+  # All values starting with the given string.
+  id_starts_with: ID
+
+  # All values not starting with the given string.
+  id_not_starts_with: ID
+
+  # All values ending with the given string.
+  id_ends_with: ID
+
+  # All values not ending with the given string.
+  id_not_ends_with: ID
+  title: String
+
+  # All values that are not equal to given value.
+  title_not: String
+
+  # All values that are contained in given list.
+  title_in: [String!]
+
+  # All values that are not contained in given list.
+  title_not_in: [String!]
+
+  # All values less than the given value.
+  title_lt: String
+
+  # All values less than or equal the given value.
+  title_lte: String
+
+  # All values greater than the given value.
+  title_gt: String
+
+  # All values greater than or equal the given value.
+  title_gte: String
+
+  # All values containing the given string.
+  title_contains: String
+
+  # All values not containing the given string.
+  title_not_contains: String
+
+  # All values starting with the given string.
+  title_starts_with: String
+
+  # All values not starting with the given string.
+  title_not_starts_with: String
+
+  # All values ending with the given string.
+  title_ends_with: String
+
+  # All values not ending with the given string.
+  title_not_ends_with: String
+  products_every: ProductFilter
+  products_some: ProductFilter
+  products_none: ProductFilter
+}
+
+enum CategoryOrderBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+}
+
+input CategoryproductsProduct {
+  description: String
+  imageUrl: String
+  price: Float
+  title: String!
+}
+
+input CreateCategory {
+  title: String!
+  productsIds: [ID!]
+  products: [CategoryproductsProduct!]
+}
+
+input CreateCategoryInput {
+  title: String!
+  productsIds: [ID!]
+  products: [CategoryproductsProduct!]
+  clientMutationId: String!
+}
+
+type CreateCategoryPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  category: Category
+  edge: CategoryEdge
+}
+
+input CreateProduct {
+  description: String
+  imageUrl: String
+  price: Float
+  title: String!
+  categoryId: ID
+  category: ProductcategoryCategory
+}
+
+input CreateProductInput {
+  description: String
+  imageUrl: String
+  price: Float
+  title: String!
+  categoryId: ID
+  category: ProductcategoryCategory
+  clientMutationId: String!
+}
+
+type CreateProductPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  product: Product
+  edge: ProductEdge
+  category: Category
+}
+
+input DeleteCategoryInput {
+  id: ID!
+  clientMutationId: String!
+}
+
+type DeleteCategoryPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  category: Category
+  edge: CategoryEdge
+  deletedId: ID
+}
+
+input DeleteProductInput {
+  id: ID!
+  clientMutationId: String!
+}
+
+type DeleteProductPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  product: Product
+  edge: ProductEdge
+  category: Category
+  deletedId: ID
+}
+
+type Mutation {
+  createCategory(input: CreateCategoryInput!): CreateCategoryPayload
+  createProduct(input: CreateProductInput!): CreateProductPayload
+  updateCategory(input: UpdateCategoryInput!): UpdateCategoryPayload
+  updateProduct(input: UpdateProductInput!): UpdateProductPayload
+  updateOrCreateCategory(input: UpdateOrCreateCategoryInput!): UpdateOrCreateCategoryPayload
+  updateOrCreateProduct(input: UpdateOrCreateProductInput!): UpdateOrCreateProductPayload
+  deleteCategory(input: DeleteCategoryInput!): DeleteCategoryPayload
+  deleteProduct(input: DeleteProductInput!): DeleteProductPayload
+  addToProductCategories(input: AddToProductCategoriesProductInput!): AddToProductCategoriesPayload
+}
+
+# An object with an ID
+interface Node {
+  # The id of the object.
+  id: ID!
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+type Product implements Node {
+  category(filter: CategoryFilter): Category!
+  description: String
+  id: ID!
+  imageUrl: String
+  price: Float
+  title: String!
+}
+
+input ProductcategoryCategory {
+  title: String!
+  productsIds: [ID!]
+  products: [CategoryproductsProduct!]
+}
+
+# A connection to a list of items.
+type ProductConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [ProductEdge]
+
+  # Count of filtered result set without considering pagination arguments
+  count: Int!
+}
+
+# An edge in a connection.
+type ProductEdge {
+  # The item at the end of the edge.
+  node: Product!
+
+  # A cursor for use in pagination.
+  cursor: String!
+}
+
+input ProductFilter {
+  # Logical AND on all given filters.
+  AND: [ProductFilter!]
+
+  # Logical OR on all given filters.
+  OR: [ProductFilter!]
+  description: String
+
+  # All values that are not equal to given value.
+  description_not: String
+
+  # All values that are contained in given list.
+  description_in: [String!]
+
+  # All values that are not contained in given list.
+  description_not_in: [String!]
+
+  # All values less than the given value.
+  description_lt: String
+
+  # All values less than or equal the given value.
+  description_lte: String
+
+  # All values greater than the given value.
+  description_gt: String
+
+  # All values greater than or equal the given value.
+  description_gte: String
+
+  # All values containing the given string.
+  description_contains: String
+
+  # All values not containing the given string.
+  description_not_contains: String
+
+  # All values starting with the given string.
+  description_starts_with: String
+
+  # All values not starting with the given string.
+  description_not_starts_with: String
+
+  # All values ending with the given string.
+  description_ends_with: String
+
+  # All values not ending with the given string.
+  description_not_ends_with: String
+  id: ID
+
+  # All values that are not equal to given value.
+  id_not: ID
+
+  # All values that are contained in given list.
+  id_in: [ID!]
+
+  # All values that are not contained in given list.
+  id_not_in: [ID!]
+
+  # All values less than the given value.
+  id_lt: ID
+
+  # All values less than or equal the given value.
+  id_lte: ID
+
+  # All values greater than the given value.
+  id_gt: ID
+
+  # All values greater than or equal the given value.
+  id_gte: ID
+
+  # All values containing the given string.
+  id_contains: ID
+
+  # All values not containing the given string.
+  id_not_contains: ID
+
+  # All values starting with the given string.
+  id_starts_with: ID
+
+  # All values not starting with the given string.
+  id_not_starts_with: ID
+
+  # All values ending with the given string.
+  id_ends_with: ID
+
+  # All values not ending with the given string.
+  id_not_ends_with: ID
+  imageUrl: String
+
+  # All values that are not equal to given value.
+  imageUrl_not: String
+
+  # All values that are contained in given list.
+  imageUrl_in: [String!]
+
+  # All values that are not contained in given list.
+  imageUrl_not_in: [String!]
+
+  # All values less than the given value.
+  imageUrl_lt: String
+
+  # All values less than or equal the given value.
+  imageUrl_lte: String
+
+  # All values greater than the given value.
+  imageUrl_gt: String
+
+  # All values greater than or equal the given value.
+  imageUrl_gte: String
+
+  # All values containing the given string.
+  imageUrl_contains: String
+
+  # All values not containing the given string.
+  imageUrl_not_contains: String
+
+  # All values starting with the given string.
+  imageUrl_starts_with: String
+
+  # All values not starting with the given string.
+  imageUrl_not_starts_with: String
+
+  # All values ending with the given string.
+  imageUrl_ends_with: String
+
+  # All values not ending with the given string.
+  imageUrl_not_ends_with: String
+  price: Float
+
+  # All values that are not equal to given value.
+  price_not: Float
+
+  # All values that are contained in given list.
+  price_in: [Float!]
+
+  # All values that are not contained in given list.
+  price_not_in: [Float!]
+
+  # All values less than the given value.
+  price_lt: Float
+
+  # All values less than or equal the given value.
+  price_lte: Float
+
+  # All values greater than the given value.
+  price_gt: Float
+
+  # All values greater than or equal the given value.
+  price_gte: Float
+  title: String
+
+  # All values that are not equal to given value.
+  title_not: String
+
+  # All values that are contained in given list.
+  title_in: [String!]
+
+  # All values that are not contained in given list.
+  title_not_in: [String!]
+
+  # All values less than the given value.
+  title_lt: String
+
+  # All values less than or equal the given value.
+  title_lte: String
+
+  # All values greater than the given value.
+  title_gt: String
+
+  # All values greater than or equal the given value.
+  title_gte: String
+
+  # All values containing the given string.
+  title_contains: String
+
+  # All values not containing the given string.
+  title_not_contains: String
+
+  # All values starting with the given string.
+  title_starts_with: String
+
+  # All values not starting with the given string.
+  title_not_starts_with: String
+
+  # All values ending with the given string.
+  title_ends_with: String
+
+  # All values not ending with the given string.
+  title_not_ends_with: String
+  category: CategoryFilter
+}
+
+enum ProductOrderBy {
+  description_ASC
+  description_DESC
+  id_ASC
+  id_DESC
+  imageUrl_ASC
+  imageUrl_DESC
+  price_ASC
+  price_DESC
+  title_ASC
+  title_DESC
+}
+
+type Query {
+  viewer: Viewer!
+
+  # Fetches an object given its ID
+  node(
+    # The ID of an object
+    id: ID!
+  ): Node
+}
+
+input UpdateCategory {
+  id: ID!
+  title: String
+  productsIds: [ID!]
+  products: [CategoryproductsProduct!]
+}
+
+input UpdateCategoryInput {
+  id: ID!
+  title: String
+  productsIds: [ID!]
+  products: [CategoryproductsProduct!]
+  clientMutationId: String!
+}
+
+type UpdateCategoryPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  category: Category
+  edge: CategoryEdge
+}
+
+input UpdateOrCreateCategoryInput {
+  update: UpdateCategory!
+  create: CreateCategory!
+  clientMutationId: String!
+}
+
+type UpdateOrCreateCategoryPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  category: Category
+  edge: CategoryEdge
+}
+
+input UpdateOrCreateProductInput {
+  update: UpdateProduct!
+  create: CreateProduct!
+  clientMutationId: String!
+}
+
+type UpdateOrCreateProductPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  product: Product
+  edge: ProductEdge
+  category: Category
+}
+
+input UpdateProduct {
+  description: String
+  id: ID!
+  imageUrl: String
+  price: Float
+  title: String
+  categoryId: ID
+  category: ProductcategoryCategory
+}
+
+input UpdateProductInput {
+  description: String
+  id: ID!
+  imageUrl: String
+  price: Float
+  title: String
+  categoryId: ID
+  category: ProductcategoryCategory
+  clientMutationId: String!
+}
+
+type UpdateProductPayload {
+  viewer: Viewer!
+  clientMutationId: String!
+  product: Product
+  edge: ProductEdge
+  category: Category
+}
+
+# This is the famous Relay viewer object
+type Viewer {
+  allCategories(filter: CategoryFilter, orderBy: CategoryOrderBy, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
+  allProducts(filter: ProductFilter, orderBy: ProductOrderBy, skip: Int, after: String, before: String, first: Int, last: Int): ProductConnection!
+  Category(id: ID): Category
+  Product(id: ID): Product
+  id: ID!
+}
+

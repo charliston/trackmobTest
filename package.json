@@ -1,0 +1,35 @@
+{
+  "name": "trackmobTest",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "relay": "relay-compiler --src ./app --schema data/schema.graphql",
+    "relay:watch": "npm run relay --watch",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@shoutem/animation": "^0.12.2",
+    "@shoutem/ui": "^0.23.4",
+    "react": "16.3.0",
+    "react-loadable": "^5.3.1",
+    "react-native": "0.54.4",
+    "react-native-image-progress": "^1.1.0",
+    "react-navigation": "^1.5.8",
+    "react-relay": "^1.5.0",
+    "relay": "^0.8.0-1"
+  },
+  "devDependencies": {
+    "babel-jest": "22.4.3",
+    "babel-plugin-relay": "^1.5.0",
+    "babel-preset-react-native": "4.0.0",
+    "jest": "22.4.3",
+    "react-test-renderer": "16.3.0",
+    "relay-compiler": "^1.5.0",
+    "react-dom": "16.3.0",
+    "prop-types": "^15.6.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

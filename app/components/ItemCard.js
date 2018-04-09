@@ -7,31 +7,6 @@ import { Text, Screen, TouchableOpacity, ImageBackground, Divider, Tile, Title, 
 const ItemCard = ({ onPress, product }) => {
   let { width } = Dimensions.get('window');
   const styles = StyleSheet.create({
-    card:{
-      width: (180 / 375) * width,
-      flex: 1,
-    },
-    view: {
-      flex: 1,
-      alignSelf: 'stretch',
-      padding: 10,
-      backgroundColor: '#FFFFFF'
-    },
-    subtitle: {
-      fontFamily: 'Rubik-Regular',
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      color: '#222222',
-      fontSize: 15,
-      marginBottom: 10
-    },
-    caption: {
-      fontFamily: 'Rubik-Regular',
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontSize: 12,
-      color: '#666666'
-    },
     image:{ width: (180 / 375) * width, height: (85 / 375) * width}
   });
 
@@ -49,7 +24,10 @@ const ItemCard = ({ onPress, product }) => {
         />
         <View styleName="content">
           <Subtitle>{product.title}</Subtitle>
-          <Caption>$ {product.price}</Caption>
+          <View styleName="horizontal v-center space-between">
+            <Caption>${product.price}</Caption>
+            <Caption>{product.category.title}</Caption>
+          </View>
         </View>
       </Card>
     </TouchableOpacity>

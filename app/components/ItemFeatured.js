@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
-import { TouchableOpacity, ImageBackground, Tile, Title, Divider, Subtitle } from '@shoutem/ui';
+import { TouchableOpacity, ImageBackground, Tile, Title, Divider, Subtitle, Overlay } from '@shoutem/ui';
 
 const ItemFeatured = ({ onPress, product }) => {
 
@@ -15,7 +15,10 @@ const ItemFeatured = ({ onPress, product }) => {
       >
         <Tile>
           <Title styleName="md-gutter-bottom">{product.title}</Title>
-          <Subtitle styleName="sm-gutter-horizontal collapsible" numberOfLines={3}>$ {product.price}</Subtitle>
+          <Subtitle styleName="small-gutter">{product.category.title}</Subtitle>
+          <Overlay styleName="solid-bright">
+            <Subtitle styleName="sm-gutter-horizontal">${product.price}</Subtitle>
+          </Overlay>
         </Tile>
       </ImageBackground>
       <Divider styleName="line" />

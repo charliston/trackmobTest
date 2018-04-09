@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { StoriesStack } from './config/router';
+import { ProductsStack } from './config/router';
 
 class App extends Component {
   render() {
-    return <StoriesStack />;
+    return <ProductsStack />;
   }
 }
 

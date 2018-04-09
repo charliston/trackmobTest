@@ -15,20 +15,36 @@ const LoadableProductDetail = Loadable({
   loading: Loading,
 });
 
+const LoadableProductForm = Loadable({
+  loader: () => import('../screens/ProductForm'),
+  loading: Loading,
+});
+
 export const ProductsStack = StackNavigator({
   Products: {
     screen: LoadableProductList,
     navigationOptions: ({ navigation }) => ({
       title: 'Featured Products',
-      headerRight: <HeaderButton buttonImage="add" onPress={() => navigation.goBack(null)} />,
+      headerRight: <HeaderButton buttonImage="add" onPress={() => navigation.navigate('ProductForm')} />,
     }),
   },
   ProductDetail: {
     screen: LoadableProductDetail,
+    navigationOptions: ({ navigation }) => {
+      const product = navigation.state.params;
+      return {
+        headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)}/>,
+        title: 'Featured Products',
+        headerRight: <HeaderButton buttonImage="edit" onPress={() => navigation.navigate('ProductForm', { ...product }) } />,
+      }
+    }
+  },
+  ProductForm: {
+    screen: LoadableProductForm,
     navigationOptions: ({ navigation }) => ({
       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
       title: 'Featured Products',
-      headerRight: <HeaderButton buttonImage="edit" onPress={() => navigation.goBack(null)} />,
+      headerRight: (navigation.state.params? <HeaderButton buttonImage="delete" onPress={() => navigation.state.params.deleteProduct(navigation.state.params.id)}/> : null),
     })
   },
 });

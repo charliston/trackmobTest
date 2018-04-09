@@ -1,7 +1,7 @@
 import React from 'react';
 import { StackNavigator, HeaderBackButton } from 'react-navigation';
 import Loadable from 'react-loadable';
-import Loading from '../screens/Loading';
+import Loading from '../components/Loading';
 
 import HeaderButton  from '../components/HeaderButton';
 

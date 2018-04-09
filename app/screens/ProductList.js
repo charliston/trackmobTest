@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Text, Screen } from '@shoutem/ui';
+import { Dimensions } from 'react-native';
+import { Screen, ListView, GridRow } from '@shoutem/ui';
+
+import ItemCard from '../components/ItemCard';
+import ItemFeatured from '../components/ItemFeatured';
 
 const mockList = [
   {
@@ -17,14 +21,62 @@ const mockList = [
 ];
 
 class ProductList extends Component{
+  constructor(props) {
+    super(props);
+    this.renderRow = this.renderRow.bind(this);
+
+    // Event Listener for orientation changes
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        orientation: (Dimensions.get('screen').height >= Dimensions.get('screen').width) ? 'portrait' : 'landscape',
+      });
+    });
+  }
+  goToDetail = product => {
+    this.props.navigation.navigate('ProductDetail', { ...product });
+  };
+  renderRow(rowData, sectionId, index) {
+    // rowData contains grouped data for one row,
+    // so we need to remap it into cells and pass to GridRow
+    if (index === '0') {
+      return (
+        <ItemFeatured onPress={() => this.goToDetail(rowData[0])} product={rowData[0]} key={rowData[0].id} />
+      );
+    }
+
+    const cellViews = rowData.map((item, id) => {
+      return (
+        <ItemCard onPress={() => this.goToDetail(item)} product={item} key={item.id}/>
+      );
+    });
+
+    return (
+      <GridRow columns={2}>
+        {cellViews}
+      </GridRow>
+    );
+  }
+
   render() {
+    const AllProducts = mockList;
+
+    let isFirstArticle = true;
+    const groupedData = GridRow.groupByRows(AllProducts, 2, () => {
+      if (isFirstArticle) {
+        isFirstArticle = false;
+        return 2;
+      }
+      return 1;
+    });
+
     return (
       <Screen>
-        <Text>
-          ProductList
-        </Text>
+        <ListView
+          data={groupedData}
+          renderRow={this.renderRow}
+        />
       </Screen>
-    )
+    );
   }
 }
 

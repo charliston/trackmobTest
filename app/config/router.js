@@ -43,7 +43,7 @@ export const ProductsStack = StackNavigator({
     screen: LoadableProductForm,
     navigationOptions: ({ navigation }) => ({
       headerLeft: <HeaderBackButton onPress={() => navigation.goBack(null)} />,
-      title: 'Featured Products',
+      title: (navigation.state.params? 'Edit': 'Add') +' Product',
       headerRight: (navigation.state.params? <HeaderButton buttonImage="delete" onPress={() => navigation.state.params.deleteProduct(navigation.state.params.id)}/> : null),
     })
   },

@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import _ from 'lodash';
 
 import { ScrollView, Button, View, DropDownMenu, Caption, FormGroup, Text, TextInput, Screen } from '@shoutem/ui';
 const options = [
-  {
-    name: 'Lifestyle',
-    id: '7',
-  },
-  {
-    name: 'Food',
-    id: '8',
-  },
-  {
-    name: 'Nature',
-    id: '9',
-  },
-
+  { id: '7', title: 'Lifestyle', },
+  { id: '8', title: 'Food', },
+  { id: 'c1', title: 'Nature', },
 ];
 
 const mock = {
-  category: { id: "c1", title: "Category 1" }, description: "Product description 1", id: "p1", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 1"
+  category: { id: "c1", title: "Nature" }, description: "Product description 1", id: "p1", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 1"
 };
 
-const emptyOption = { id: '', name: 'Select'};
-const optionsWithEmptyOption = [emptyOption, ...options];
+const optionsWithEmptyOption = [{ id: '', title: 'Select'}, ...options];
 
 export default class ProductForm extends Component {
   constructor() {
     super();
     this.state = {
-      selectedOption: options[0],
-      selectedOptionForFormGroupDropdown: emptyOption,
+      selectedOption: {
+        id: 'c1',
+        title: 'Nature',
+      },
+      product: {
+        category: { id: '', title: '' },
+        description: '',
+        id: '',
+        imageUrl: '',
+        price: '',
+        title: ''
+      }
     };
   }
 
@@ -46,48 +46,61 @@ export default class ProductForm extends Component {
     }
   }
 
+  updateProductField(field, value) {
+    const { product } = this.state;
+    product[field] = value;
+    this.setState({ product });
+  }
+
+  deepIndex = (array, item) => {
+    let result = -1;
+    _.some(array, function (value, index) {
+      if (_.isEqual(value, item)) {
+        result = index;
+        return true;
+      }
+    });
+    return result;
+  };
+
+
   render() {
-    const { selectedOption, selectedOptionForFormGroupDropdown } = this.state;
+    // const { selectedOption } = this.state;
+
+    const _selectedOptionIndex = this.deepIndex(optionsWithEmptyOption, this.state.product.category);
+    let selectedOption = optionsWithEmptyOption[0];
+    if(_selectedOptionIndex !== -1) {
+      selectedOption = optionsWithEmptyOption[_selectedOptionIndex];
+    }
+
+
 
     return (
       <ScrollView styleName="vertical collapsed">
         <View style={styles.stage}>
           <FormGroup styleName="stretch">
-            <Caption>title</Caption>
             <TextInput
-              placeholder="Username or Email"
-              // onChangeText={}
+              placeholder="Title"
+              onChangeText={value => this.updateProductField('title', value)}
             />
-          </FormGroup>
-          <FormGroup styleName="stretch">
-            <Caption>CATEGORY</Caption>
             <DropDownMenu
-              options={options}
+              options={optionsWithEmptyOption}
               selectedOption={selectedOption}
-              onOptionSelected={option => this.setState({ selectedOption: option })}
-              titleProperty={"name"}
+              onOptionSelected={option => this.updateProductField('categoryId', option)}
+              titleProperty={"title"}
               valueProperty={"id"}
             />
-          </FormGroup>
-          <FormGroup styleName="stretch">
-            <Caption>description</Caption>
             <TextInput
-              placeholder="Username or Email"
-              // onChangeText={}
+              placeholder="Description"
+              onChangeText={value => this.updateProductField('title', value)}
             />
-          </FormGroup>
-          <FormGroup styleName="stretch">
-            <Caption>price</Caption>
             <TextInput
-              placeholder="Username or Email"
-              // onChangeText={}
+              placeholder="Price"
+              onChangeText={value => this.updateProductField('price', value)}
             />
-          </FormGroup>
-          <FormGroup styleName="stretch">
-            <Caption>imageUrl</Caption>
             <TextInput
-              placeholder="Username or Email"
-              // onChangeText={}
+              placeholder="Image URL"
+              onChangeText={value => this.updateProductField('imageUrl', value)}
             />
           </FormGroup>
           <Button styleName="secondary full-width">

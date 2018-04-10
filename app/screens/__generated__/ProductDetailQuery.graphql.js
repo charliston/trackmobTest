@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash a47340654fb2a3bc6ff0e11aa99c02d4
+ * @relayHash e2e2f34c3944a5be6831a2fb1f335554
  */
 
 /* eslint-disable */
@@ -35,6 +35,10 @@ fragment ProductDetail_query on Query {
       price
       description
       imageUrl
+      category {
+        title
+        id
+      }
     }
     id
   }
@@ -49,13 +53,27 @@ var v0 = [
     "type": "ID!",
     "defaultValue": null
   }
-];
+],
+v1 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
+},
+v2 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "title",
+  "args": null,
+  "storageKey": null
+};
 return {
   "kind": "Request",
   "operationKind": "query",
   "name": "ProductDetailQuery",
   "id": null,
-  "text": "query ProductDetailQuery(\n  $id: ID!\n) {\n  ...ProductDetail_query\n}\n\nfragment ProductDetail_query on Query {\n  node(id: $id) {\n    __typename\n    ... on Product {\n      id\n      title\n      price\n      description\n      imageUrl\n    }\n    id\n  }\n}\n",
+  "text": "query ProductDetailQuery(\n  $id: ID!\n) {\n  ...ProductDetail_query\n}\n\nfragment ProductDetail_query on Query {\n  node(id: $id) {\n    __typename\n    ... on Product {\n      id\n      title\n      price\n      description\n      imageUrl\n      category {\n        title\n        id\n      }\n    }\n    id\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -99,24 +117,12 @@ return {
             "args": null,
             "storageKey": null
           },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "id",
-            "args": null,
-            "storageKey": null
-          },
+          v1,
           {
             "kind": "InlineFragment",
             "type": "Product",
             "selections": [
-              {
-                "kind": "ScalarField",
-                "alias": null,
-                "name": "title",
-                "args": null,
-                "storageKey": null
-              },
+              v2,
               {
                 "kind": "ScalarField",
                 "alias": null,
@@ -137,6 +143,19 @@ return {
                 "name": "imageUrl",
                 "args": null,
                 "storageKey": null
+              },
+              {
+                "kind": "LinkedField",
+                "alias": null,
+                "name": "category",
+                "storageKey": null,
+                "args": null,
+                "concreteType": "Category",
+                "plural": false,
+                "selections": [
+                  v2,
+                  v1
+                ]
               }
             ]
           }

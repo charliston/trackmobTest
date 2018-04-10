@@ -17,13 +17,24 @@ export type ProductDetail_query = {|
     +price?: ?number,
     +description?: ?string,
     +imageUrl?: ?string,
+    +category?: {|
+      +title: string,
+    |},
   |},
   +$refType: ProductDetail_query$ref,
 |};
 */
 
 
-const node/*: ConcreteFragment*/ = {
+const node/*: ConcreteFragment*/ = (function(){
+var v0 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "title",
+  "args": null,
+  "storageKey": null
+};
+return {
   "kind": "Fragment",
   "name": "ProductDetail_query",
   "type": "Query",
@@ -63,13 +74,7 @@ const node/*: ConcreteFragment*/ = {
               "args": null,
               "storageKey": null
             },
-            {
-              "kind": "ScalarField",
-              "alias": null,
-              "name": "title",
-              "args": null,
-              "storageKey": null
-            },
+            v0,
             {
               "kind": "ScalarField",
               "alias": null,
@@ -90,6 +95,18 @@ const node/*: ConcreteFragment*/ = {
               "name": "imageUrl",
               "args": null,
               "storageKey": null
+            },
+            {
+              "kind": "LinkedField",
+              "alias": null,
+              "name": "category",
+              "storageKey": null,
+              "args": null,
+              "concreteType": "Category",
+              "plural": false,
+              "selections": [
+                v0
+              ]
             }
           ]
         }
@@ -97,5 +114,6 @@ const node/*: ConcreteFragment*/ = {
     }
   ]
 };
-(node/*: any*/).hash = '605bb3bd745962a5437f5b8dc04c5352';
+})();
+(node/*: any*/).hash = '685279371ad78d85e240ea5d1eda60b7';
 module.exports = node;

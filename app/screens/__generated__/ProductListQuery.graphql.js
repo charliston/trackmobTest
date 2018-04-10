@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f94efc981e6887e50dd6a4a2f13a2d5a
+ * @relayHash 65d625e3266d6c9c3abc47a51d64737e
  */
 
 /* eslint-disable */
@@ -43,6 +43,7 @@ fragment ProductList_viewer on Viewer {
       node {
         id
         title
+        description
         price
         category {
           title
@@ -91,7 +92,7 @@ return {
   "operationKind": "query",
   "name": "ProductListQuery",
   "id": null,
-  "text": "query ProductListQuery(\n  $count: Int!\n  $cursor: String\n) {\n  viewer {\n    ...ProductList_viewer\n    id\n  }\n}\n\nfragment ProductList_viewer on Viewer {\n  allProducts(first: $count, after: $cursor) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        id\n        title\n        price\n        category {\n          title\n          id\n        }\n        imageUrl\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
+  "text": "query ProductListQuery(\n  $count: Int!\n  $cursor: String\n) {\n  viewer {\n    ...ProductList_viewer\n    id\n  }\n}\n\nfragment ProductList_viewer on Viewer {\n  allProducts(first: $count, after: $cursor) {\n    pageInfo {\n      hasNextPage\n      endCursor\n    }\n    edges {\n      node {\n        id\n        title\n        description\n        price\n        category {\n          title\n          id\n        }\n        imageUrl\n        __typename\n      }\n      cursor\n    }\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -199,6 +200,13 @@ return {
                     "selections": [
                       v1,
                       v2,
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "name": "description",
+                        "args": null,
+                        "storageKey": null
+                      },
                       {
                         "kind": "ScalarField",
                         "alias": null,

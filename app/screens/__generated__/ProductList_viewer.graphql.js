@@ -20,9 +20,11 @@ export type ProductList_viewer = {|
       +node: {|
         +id: string,
         +title: string,
+        +description: ?string,
         +price: ?number,
         +category: {|
           +title: string,
+          +id: string,
         |},
         +imageUrl: ?string,
       |},
@@ -35,6 +37,13 @@ export type ProductList_viewer = {|
 
 const node/*: ConcreteFragment*/ = (function(){
 var v0 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
+},
+v1 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "title",
@@ -122,14 +131,15 @@ return {
               "concreteType": "Product",
               "plural": false,
               "selections": [
+                v0,
+                v1,
                 {
                   "kind": "ScalarField",
                   "alias": null,
-                  "name": "id",
+                  "name": "description",
                   "args": null,
                   "storageKey": null
                 },
-                v0,
                 {
                   "kind": "ScalarField",
                   "alias": null,
@@ -146,6 +156,7 @@ return {
                   "concreteType": "Category",
                   "plural": false,
                   "selections": [
+                    v1,
                     v0
                   ]
                 },
@@ -179,5 +190,5 @@ return {
   ]
 };
 })();
-(node/*: any*/).hash = '339de7538351899278747fb0927f4fb4';
+(node/*: any*/).hash = '1ca7a3e24d430de69ed81357df182cf6';
 module.exports = node;

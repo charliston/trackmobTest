@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { graphql, createFragmentContainer, QueryRenderer } from 'react-relay';
+import environment from '../Enviroment';
+import Loading from '../components/Loading';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
-
 import { ScrollView, Button, View, DropDownMenu, Caption, FormGroup, Text, TextInput, Screen } from '@shoutem/ui';
+import { withNavigation, NavigationActions } from "react-navigation";
+import DeletePostMutation from '../mutations/DeleteProductMutation';
+
 const options = [
   { id: '7', title: 'Lifestyle', },
   { id: '8', title: 'Food', },
@@ -14,9 +18,9 @@ const mock = {
   category: { id: "c1", title: "Nature" }, description: "Product description 1", id: "p1", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 1"
 };
 
-const optionsWithEmptyOption = [{ id: '', title: 'Select'}, ...options];
+const optionsWithEmptyOption = [{ id: '', title: 'Select'}];
 
-export default class ProductForm extends Component {
+class ProductForm extends Component {
   constructor() {
     super();
     this.state = {
@@ -36,12 +40,21 @@ export default class ProductForm extends Component {
   }
 
   deleteProduct = (id) => {
-    alert(`This item ${id} will be deleted!`);
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: "Products"
+        })
+      ]
+    });
+    DeletePostMutation(id, this.props.viewer.id, () => this.props.navigation.dispatch(resetAction));
   };
 
   componentWillMount() {
     if(this.props.navigation.state.params) {
-      this.state.product = this.props.navigation.state.params;
+      const product = this.props.navigation.state.params;
+      this.setState({ product });
       this.props.navigation.setParams({ deleteProduct: this.deleteProduct });
     }
   }
@@ -63,9 +76,17 @@ export default class ProductForm extends Component {
     return result;
   };
 
+  mapEdgesToArray = (categories) => {
+    categories.edges.map(edge => {
+      optionsWithEmptyOption.push(edge.node);
+    });
+  };
+
+  _handlePost = () => {};
 
   render() {
-    // const { selectedOption } = this.state;
+    console.log(this.props);
+    this.mapEdgesToArray(this.props.viewer.allCategories);
 
     const _selectedOptionIndex = this.deepIndex(optionsWithEmptyOption, this.state.product.category);
     let selectedOption = optionsWithEmptyOption[0];
@@ -73,16 +94,17 @@ export default class ProductForm extends Component {
       selectedOption = optionsWithEmptyOption[_selectedOptionIndex];
     }
 
-
-
     return (
       <ScrollView styleName="vertical collapsed">
         <View style={styles.stage}>
           <FormGroup styleName="stretch">
+            <Caption>TITLE</Caption>
             <TextInput
               placeholder="Title"
               onChangeText={value => this.updateProductField('title', value)}
+              value={this.state.product.title}
             />
+            <Caption>CATEGORY</Caption>
             <DropDownMenu
               options={optionsWithEmptyOption}
               selectedOption={selectedOption}
@@ -90,20 +112,26 @@ export default class ProductForm extends Component {
               titleProperty={"title"}
               valueProperty={"id"}
             />
+            <Caption>DESCRIPTION</Caption>
             <TextInput
               placeholder="Description"
-              onChangeText={value => this.updateProductField('title', value)}
+              onChangeText={value => this.updateProductField('description', value)}
+              value={this.state.product.description}
             />
+            <Caption>PRICE</Caption>
             <TextInput
               placeholder="Price"
               onChangeText={value => this.updateProductField('price', value)}
+              value={(this.state.product.price !== '')? this.state.product.price.toFixed(2): ''}
             />
+            <Caption>IMAGE URL</Caption>
             <TextInput
               placeholder="Image URL"
               onChangeText={value => this.updateProductField('imageUrl', value)}
+              value={this.state.product.imageUrl}
             />
           </FormGroup>
-          <Button styleName="secondary full-width">
+          <Button styleName="secondary full-width" onPress={this._handlePost}>
             <Icon size={15} color={'#FFF'} name="save" style={{marginRight:5}} />
             <Text>SAVE</Text>
           </Button>
@@ -113,38 +141,54 @@ export default class ProductForm extends Component {
   }
 }
 
-
-function Stage({ title, children }) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <View style={styles.stage}>
-        {children}
-      </View>
-    </View>
-  );
+const ProductFormFragmentContainer = createFragmentContainer(withNavigation(ProductForm), graphql`
+fragment ProductForm_viewer on Viewer {
+  id
+  allCategories {
+    edges {
+      node {
+        id
+        title
+      }
+    }
+  }
 }
-
-Stage.propTypes = {
-  title: PropTypes.string,
-  children: PropTypes.node,
+`,
+);
+const ProductDetailQueryRenderer = ({ navigation }) => {
+  return (
+    <QueryRenderer
+      environment={environment}
+      query={graphql`
+        query ProductFormQuery {
+          viewer {
+            ...ProductForm_viewer
+          }
+        }
+      `}
+      render={({error, props}) => {
+        if(error) {
+          console.error(error);
+        }
+        else if(props) {
+          console.log(props.viewer);
+          return <ProductFormFragmentContainer viewer={props.viewer} />;
+        }
+        return (
+          <Loading />
+        )
+      }}
+    />
+  )
 };
 
 const styles =  {
-  container: {
-    marginVertical: 24,
-    flexDirection: 'column',
-  },
-  title: {
-    fontSize: 18,
-    color: '#444f6c',
-    margin: 8,
-  },
   stage: {
-
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f5f6f7',
   },
 };
+
+export default ProductDetailQueryRenderer;

@@ -67,6 +67,7 @@ fragment ProductDetail_query on Query {
       imageUrl
       category {
         title
+        id
       }
     }
   }

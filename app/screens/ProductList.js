@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, ActivityIndicator, StyleSheet, Text, View, FlatList } from 'react-native';
+import { Dimensions, StyleSheet, FlatList } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import environment from '../Enviroment';
 import Loading from '../components/Loading';
@@ -31,12 +31,10 @@ class ProductList extends Component<any, Props, State> {
         orientation: (Dimensions.get('screen').height >= Dimensions.get('screen').width) ? 'portrait' : 'landscape',
       });
     });
-    console.log(this.props)
   }
 
 
   onRefresh = () => {
-    console.log(this.props);
     const { allProducts } = this.props.viewer;
 
     if (this.props.relay.isLoading()) {
@@ -61,7 +59,9 @@ class ProductList extends Component<any, Props, State> {
 
     // fetch more 2
     this.props.relay.loadMore(2, (err) => {
-      console.log('loadMore: ', err);
+      if(err) {
+        console.error('loadMore: ', err);
+      }
     });
   };
 
@@ -134,9 +134,11 @@ const ProductListPaginationContainer = createPaginationContainer(withNavigation(
             node {
               id
               title
+              description
               price
               category {
                 title
+                id
               }
               imageUrl
             }

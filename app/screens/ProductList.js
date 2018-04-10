@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
-import { Dimensions } from 'react-native';
-import { Screen, ListView, GridRow } from '@shoutem/ui';
-
+import { Dimensions, ActivityIndicator, StyleSheet, Text, View, FlatList } from 'react-native';
+import { withNavigation } from 'react-navigation';
+import environment from '../Enviroment';
+import Loading from '../components/Loading';
+import { createPaginationContainer, graphql, QueryRenderer } from 'react-relay';
+import { type ProductList_viewer } from './__generated__/ProductList_viewer.graphql';
 import ItemCard from '../components/ItemCard';
 import ItemFeatured from '../components/ItemFeatured';
 
-const mockList = [
-  {
-    category: { id: "c1", title: "Category 1" }, description: "Product description 1", id: "p1", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 1"
-  },
-  {
-    category: { id: "c1", title: "Category 1" }, description: "Product description 2", id: "p2", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 2"
-  },
-  {
-    category: { id: "c1", title: "Category 1" }, description: "Product description 3", id: "p3", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 3"
-  },
-  {
-    category: { id: "c1", title: "Category 1" }, description: "Product description 4", id: "p4", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 4"
-  },
-];
+import { GridRow, Screen } from '@shoutem/ui';
 
-class ProductList extends Component{
+type Props = {
+  viewer: ProductDetail_viewer,
+};
+
+type State = {
+  isFetchingTop: boolean,
+};
+
+class ProductList extends Component<any, Props, State> {
   constructor(props) {
     super(props);
-    this.renderRow = this.renderRow.bind(this);
+    this.state = {
+      isFetchingTop: false,
+    };
 
     // Event Listener for orientation changes
     Dimensions.addEventListener('change', () => {
@@ -31,37 +31,70 @@ class ProductList extends Component{
         orientation: (Dimensions.get('screen').height >= Dimensions.get('screen').width) ? 'portrait' : 'landscape',
       });
     });
+    console.log(this.props)
   }
-  goToDetail = product => {
-    this.props.navigation.navigate('ProductDetail', { ...product });
+
+
+  onRefresh = () => {
+    console.log(this.props);
+    const { allProducts } = this.props.viewer;
+
+    if (this.props.relay.isLoading()) {
+      return;
+    }
+
+    this.setState({
+      isFetchingTop: true,
+    });
+
+    this.props.relay.refetchConnection(allProducts.edges.length, (err) => {
+      this.setState({
+        isFetchingTop: false,
+      });
+    });
   };
-  renderRow(rowData, sectionId, index) {
-    // rowData contains grouped data for one row,
-    // so we need to remap it into cells and pass to GridRow
-    if (index === '0') {
+
+  onEndReached = () => {
+    if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
+      return;
+    }
+
+    // fetch more 2
+    this.props.relay.loadMore(2, (err) => {
+      console.log('loadMore: ', err);
+    });
+  };
+
+  renderItem = ({ item, index }) => {
+    if (index === 0) {
+      const { node } = item[0];
       return (
-        <ItemFeatured onPress={() => this.goToDetail(rowData[0])} product={rowData[0]} key={rowData[0].id} />
+        <ItemFeatured onPress={() => this.goToProductDetail(node)} product={node} key={node.id} />
       );
     }
 
-    const cellViews = rowData.map((item, id) => {
+    const cellViews = item.map((product) => {
+      const { node } = product;
       return (
-        <ItemCard onPress={() => this.goToDetail(item)} product={item} key={item.id}/>
+        <ItemCard onPress={() => this.goToProductDetail(node)} product={node} key={node.id} />
       );
     });
-
     return (
       <GridRow columns={2}>
         {cellViews}
       </GridRow>
     );
-  }
+  };
+
+  goToProductDetail = product => {
+    this.props.navigation.navigate('ProductDetail', { ...product });
+  };
 
   render() {
-    const AllProducts = mockList;
+    const { allProducts } = this.props.viewer;
 
     let isFirstArticle = true;
-    const groupedData = GridRow.groupByRows(AllProducts, 2, () => {
+    const groupedData = GridRow.groupByRows(allProducts.edges, 2, () => {
       if (isFirstArticle) {
         isFirstArticle = false;
         return 2;
@@ -71,13 +104,116 @@ class ProductList extends Component{
 
     return (
       <Screen>
-        <ListView
+        <FlatList
           data={groupedData}
-          renderRow={this.renderRow}
+          renderItem={this.renderItem}
+          keyExtractor={(item, i) => i.toString()}
+          onEndReached={this.onEndReached}
+          onRefresh={this.onRefresh}
+          refreshing={this.state.isFetchingTop}
+          ListFooterComponent={this.renderFooter}
         />
       </Screen>
     );
   }
 }
 
-export default ProductList;
+const ProductListPaginationContainer = createPaginationContainer(withNavigation(ProductList),
+  {
+    viewer: graphql`
+      fragment ProductList_viewer on Viewer {
+        allProducts(
+          first: $count
+          after: $cursor
+        ) @connection(key: "ProductList_allProducts") {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          edges {
+            node {
+              id
+              title
+              price
+              category {
+                title
+              }
+              imageUrl
+            }
+          }
+        }
+      } 
+    `,
+  },
+  {
+    direction: 'forward',
+    getConnectionFromProps(props) {
+      return props.viewer && props.viewer.allProducts;
+    },
+    getFragmentVariables(prevVars, totalCount) {
+      return {
+        ...prevVars,
+        count: totalCount,
+      };
+    },
+    getVariables(props, { count, cursor }, fragmentVariables) {
+      return {
+        count,
+        cursor,
+      };
+    },
+    variables: { cursor: null },
+    query: graphql`
+      query ProductListPaginationQuery (
+        $count: Int!,
+        $cursor: String
+      ) {
+        viewer {
+          ...ProductList_viewer
+        }
+      }
+    `,
+  },
+);
+
+const ProductListQueryRenderer = () => {
+  return (
+    <QueryRenderer
+      environment={environment}
+      query={graphql`
+      query ProductListQuery(
+        $count: Int!,
+        $cursor: String
+      ) {
+        viewer {
+          ...ProductList_viewer
+        }
+      }
+    `}
+      variables={{cursor: null, count: 1}}
+      render={({error, props}) => {
+        if (props) {
+          return <ProductListPaginationContainer viewer={props.viewer} />;
+        } else {
+          return (
+            <Loading />
+          )
+        }
+      }}
+    />
+  )
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  }
+});
+
+export default ProductListQueryRenderer;

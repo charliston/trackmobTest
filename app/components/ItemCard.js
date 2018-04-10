@@ -12,11 +12,11 @@ const ItemCard = ({ onPress, product }) => {
 
   return (
     <TouchableOpacity
-      style={{ flex:1 }}
+      styleName="flexible"
       activeOpacity={0.8}
       onPress={onPress}
     >
-      <Card>
+      <Card styleName="flexible">
         <Image
           style={styles.image}
           styleName="medium-wide"
@@ -25,7 +25,12 @@ const ItemCard = ({ onPress, product }) => {
         <View styleName="content">
           <Subtitle>{product.title}</Subtitle>
           <View styleName="horizontal v-center space-between">
-            <Caption>${product.price}</Caption>
+            <Caption>
+              {product.price.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </Caption>
             <Caption>{product.category.title}</Caption>
           </View>
         </View>

@@ -17,7 +17,12 @@ const ItemFeatured = ({ onPress, product }) => {
           <Title styleName="md-gutter-bottom">{product.title}</Title>
           <Subtitle styleName="small-gutter">{product.category.title}</Subtitle>
           <Overlay styleName="solid-bright">
-            <Subtitle styleName="sm-gutter-horizontal">${product.price}</Subtitle>
+            <Subtitle styleName="sm-gutter-horizontal">
+              {product.price.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </Subtitle>
           </Overlay>
         </Tile>
       </ImageBackground>

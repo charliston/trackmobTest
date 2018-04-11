@@ -22,7 +22,7 @@ class ProductDetail extends Component<void, Props, any> {
   }
   render() {
     const { node } = this.props.query;
-    // console.log(node);
+
     let { width } = Dimensions.get('window');
     return (
       <Screen>

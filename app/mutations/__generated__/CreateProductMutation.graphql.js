@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 12efbcd48578b81952fbf5edf1898412
+ * @relayHash 8769f0815309651386c7c30b83d21332
  */
 
 /* eslint-disable */
@@ -35,6 +35,12 @@ export type CreateProductMutationResponse = {|
       +id: string,
       +description: ?string,
       +imageUrl: ?string,
+      +price: ?number,
+      +title: string,
+      +category: {|
+        +id: string,
+        +title: string,
+      |},
     |},
   |},
 |};
@@ -50,6 +56,12 @@ mutation CreateProductMutation(
       id
       description
       imageUrl
+      price
+      title
+      category {
+        id
+        title
+      }
     }
   }
 }
@@ -64,7 +76,21 @@ var v0 = [
     "defaultValue": null
   }
 ],
-v1 = [
+v1 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "id",
+  "args": null,
+  "storageKey": null
+},
+v2 = {
+  "kind": "ScalarField",
+  "alias": null,
+  "name": "title",
+  "args": null,
+  "storageKey": null
+},
+v3 = [
   {
     "kind": "LinkedField",
     "alias": null,
@@ -90,13 +116,7 @@ v1 = [
         "concreteType": "Product",
         "plural": false,
         "selections": [
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "id",
-            "args": null,
-            "storageKey": null
-          },
+          v1,
           {
             "kind": "ScalarField",
             "alias": null,
@@ -110,6 +130,27 @@ v1 = [
             "name": "imageUrl",
             "args": null,
             "storageKey": null
+          },
+          {
+            "kind": "ScalarField",
+            "alias": null,
+            "name": "price",
+            "args": null,
+            "storageKey": null
+          },
+          v2,
+          {
+            "kind": "LinkedField",
+            "alias": null,
+            "name": "category",
+            "storageKey": null,
+            "args": null,
+            "concreteType": "Category",
+            "plural": false,
+            "selections": [
+              v1,
+              v2
+            ]
           }
         ]
       }
@@ -121,7 +162,7 @@ return {
   "operationKind": "mutation",
   "name": "CreateProductMutation",
   "id": null,
-  "text": "mutation CreateProductMutation(\n  $input: CreateProductInput!\n) {\n  createProduct(input: $input) {\n    product {\n      id\n      description\n      imageUrl\n    }\n  }\n}\n",
+  "text": "mutation CreateProductMutation(\n  $input: CreateProductInput!\n) {\n  createProduct(input: $input) {\n    product {\n      id\n      description\n      imageUrl\n      price\n      title\n      category {\n        id\n        title\n      }\n    }\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -129,15 +170,15 @@ return {
     "type": "Mutation",
     "metadata": null,
     "argumentDefinitions": v0,
-    "selections": v1
+    "selections": v3
   },
   "operation": {
     "kind": "Operation",
     "name": "CreateProductMutation",
     "argumentDefinitions": v0,
-    "selections": v1
+    "selections": v3
   }
 };
 })();
-(node/*: any*/).hash = '4f9e51b114d8091a1f0df274836ae13f';
+(node/*: any*/).hash = 'a798525715a1ad48c5a797f0bd9ad090';
 module.exports = node;

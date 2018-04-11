@@ -7,6 +7,8 @@ import _ from 'lodash';
 import { ScrollView, Button, View, DropDownMenu, Caption, FormGroup, Text, TextInput, Screen } from '@shoutem/ui';
 import { withNavigation, NavigationActions } from "react-navigation";
 import DeletePostMutation from '../mutations/DeleteProductMutation';
+import CreatePostMutation from '../mutations/CreateProductMutation';
+import UpdatePostMutation from '../mutations/UpdateProductMutation';
 
 let optionsWithEmptyOption = [{ id: '', title: 'Select'}];
 
@@ -39,9 +41,10 @@ class ProductForm extends Component {
   };
 
   componentWillMount() {
-    if(this.props.navigation.state.params) {
-      const product = this.props.navigation.state.params;
-      this.setState({ product });
+    const { query } = this.props;
+    if(query.node) {
+      // edit product
+      this.setState({ product: query.node });
       this.props.navigation.setParams({ deleteProduct: this.deleteProduct });
     }
   }
@@ -69,15 +72,48 @@ class ProductForm extends Component {
     });
   };
 
-  _handlePost = () => {};
-
-  changePrice(value) {
-    value = value.match(/^\d+(\.\d{1,2})?$/);
-    let price = '';
-    if(value) {
-      price = value.input;
+  _handlePost = () => {
+    // validate
+    const msg = [];
+    const { product } = this.state;
+    if(product.title === '') {
+      msg.push('Title');
     }
-    this.setState({product: {price, ...this.state.product}})
+
+    if(product.category.id === '') {
+      msg.push('Category');
+    }
+
+    product.price = this.validationPrice(product.price);
+    if(isNaN(product.price)) {
+      msg.push('Price');
+    }
+
+    if(msg.length > 0) {
+      alert('Please, check this fields: '+ msg.join(', '));
+      return;
+    }
+
+    // `no image` image
+    product.imageUrl = product.imageUrl || 'https://www.hotelcubo.com/wp-content/plugins/wd-instagram-feed/images/missing.png';
+
+    // nl2br
+    product.description = product.description.split('\n').join('<br/>');
+
+    if(product.id) {
+      // update row
+      console.log(this.state.product.id)
+      // UpdatePostMutation(product, this.props.viewer.id, () => this.props.navigation.goBack(null));
+    } else {
+      // new row
+      CreatePostMutation(product, this.props.viewer.id, () => this.props.navigation.goBack(null));
+    }
+    //DeletePostMutation(id, this.props.viewer.id, () => this.props.navigation.dispatch(resetAction));
+  };
+
+  validationPrice(value) {
+    value = value+"".match(/^\d+(\.\d{1,2})?$/);
+    return parseFloat(value);
   }
 
   selectedOption(option) {
@@ -88,11 +124,12 @@ class ProductForm extends Component {
     if(_selectedOptionIndex !== -1) {
       selectedOption = optionsWithEmptyOption[_selectedOptionIndex];
     }
-    this.setState({selectedOption});
+    this.setState({selectedOption, product: { ...this.state.product, category:option, }});
   }
 
   render() {
     const { selectedOption } = this.state;
+
 
     return (
       <ScrollView styleName="vertical collapsed">
@@ -101,7 +138,7 @@ class ProductForm extends Component {
             <Caption>TITLE <Text style={{color: 'red'}}>*</Text></Caption>
             <TextInput
               placeholder="Title"
-              onChangeText={title => this.setState({product: {title, ...this.state.product}})}
+              onChangeText={title => this.setState({ product: { ...this.state.product, title, }})}
               value={this.state.product.title}
             />
             <Caption>CATEGORY <Text style={{color: 'red'}}>*</Text></Caption>
@@ -115,7 +152,7 @@ class ProductForm extends Component {
             <Caption>DESCRIPTION</Caption>
             <TextInput
               placeholder="Description"
-              onChangeText={description => this.setState({product: {description, ...this.state.product}})}
+              onChangeText={description => this.setState({ product: { ...this.state.product, description, }})}
               value={this.state.product.description.split('<br/>').join('\n')}
               multiline={true}
               numberOfLines={4}
@@ -124,14 +161,14 @@ class ProductForm extends Component {
             <Caption>PRICE <Text style={{color: 'red'}}>*</Text></Caption>
             <TextInput
               placeholder="Price"
-              onChangeText={value => this.changePrice(value)}
+              onChangeText={price => this.setState({ product: { ...this.state.product, price, }})}
               value={this.state.product.price + ''}
               keyboardType={'numeric'}
             />
             <Caption>IMAGE URL</Caption>
             <TextInput
               placeholder="Image URL"
-              onChangeText={imageUrl => this.setState({product: {imageUrl, ...this.state.product}})}
+              onChangeText={imageUrl => this.setState({ product: { ...this.state.product, imageUrl, }})}
               value={this.state.product.imageUrl}
             />
           </FormGroup>
@@ -146,7 +183,23 @@ class ProductForm extends Component {
 }
 
 const ProductFormFragmentContainer = createFragmentContainer(withNavigation(ProductForm), graphql`
+fragment ProductForm_query on Query {
+  node(id: $id) {
+    ... on Product {
+      id
+      title
+      price
+      description
+      imageUrl
+      category {
+        title
+        id
+      }
+    }
+  }
+}
 fragment ProductForm_viewer on Viewer {
+  id
   allCategories {
     edges {
       node {
@@ -159,23 +212,25 @@ fragment ProductForm_viewer on Viewer {
 `,
 );
 const ProductDetailQueryRenderer = ({ navigation }) => {
+  const id = navigation.state.params? navigation.state.params.id: 0;
   return (
     <QueryRenderer
       environment={environment}
       query={graphql`
-        query ProductFormQuery {
+        query ProductFormQuery($id: ID!) {
+          ...ProductForm_query
           viewer {
             ...ProductForm_viewer
           }
         }
       `}
+      variables={{id}}
       render={({error, props}) => {
         if(error) {
           console.error(error);
         }
         else if(props) {
-          console.log(props.viewer);
-          return <ProductFormFragmentContainer viewer={props.viewer} />;
+          return <ProductFormFragmentContainer query={props} viewer={props.viewer} />;
         }
         return (
           <Loading />

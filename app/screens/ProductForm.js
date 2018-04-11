@@ -8,26 +8,13 @@ import { ScrollView, Button, View, DropDownMenu, Caption, FormGroup, Text, TextI
 import { withNavigation, NavigationActions } from "react-navigation";
 import DeletePostMutation from '../mutations/DeleteProductMutation';
 
-const options = [
-  { id: '7', title: 'Lifestyle', },
-  { id: '8', title: 'Food', },
-  { id: 'c1', title: 'Nature', },
-];
-
-const mock = {
-  category: { id: "c1", title: "Nature" }, description: "Product description 1", id: "p1", imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg", price: "999.99", title: "Product title 1"
-};
-
-const optionsWithEmptyOption = [{ id: '', title: 'Select'}];
+let optionsWithEmptyOption = [{ id: '', title: 'Select'}];
 
 class ProductForm extends Component {
   constructor() {
     super();
     this.state = {
-      selectedOption: {
-        id: 'c1',
-        title: 'Nature',
-      },
+      selectedOption: optionsWithEmptyOption[0],
       product: {
         category: { id: '', title: '' },
         description: '',
@@ -59,10 +46,9 @@ class ProductForm extends Component {
     }
   }
 
-  updateProductField(field, value) {
-    const { product } = this.state;
-    product[field] = value;
-    this.setState({ product });
+  componentDidMount() {
+    this.mapEdgesToArray(this.props.viewer.allCategories);
+    this.selectedOption();
   }
 
   deepIndex = (array, item) => {
@@ -77,6 +63,7 @@ class ProductForm extends Component {
   };
 
   mapEdgesToArray = (categories) => {
+    optionsWithEmptyOption = [{ id: '', title: 'Select'}];
     categories.edges.map(edge => {
       optionsWithEmptyOption.push(edge.node);
     });
@@ -84,50 +71,67 @@ class ProductForm extends Component {
 
   _handlePost = () => {};
 
-  render() {
-    console.log(this.props);
-    this.mapEdgesToArray(this.props.viewer.allCategories);
+  changePrice(value) {
+    value = value.match(/^\d+(\.\d{1,2})?$/);
+    let price = '';
+    if(value) {
+      price = value.input;
+    }
+    this.setState({product: {price, ...this.state.product}})
+  }
 
-    const _selectedOptionIndex = this.deepIndex(optionsWithEmptyOption, this.state.product.category);
+  selectedOption(option) {
+    option = option || this.state.product.category;
+    const _selectedOptionIndex = this.deepIndex(optionsWithEmptyOption, option);
+
     let selectedOption = optionsWithEmptyOption[0];
     if(_selectedOptionIndex !== -1) {
       selectedOption = optionsWithEmptyOption[_selectedOptionIndex];
     }
+    this.setState({selectedOption});
+  }
+
+  render() {
+    const { selectedOption } = this.state;
 
     return (
       <ScrollView styleName="vertical collapsed">
         <View style={styles.stage}>
           <FormGroup styleName="stretch">
-            <Caption>TITLE</Caption>
+            <Caption>TITLE <Text style={{color: 'red'}}>*</Text></Caption>
             <TextInput
               placeholder="Title"
-              onChangeText={value => this.updateProductField('title', value)}
+              onChangeText={title => this.setState({product: {title, ...this.state.product}})}
               value={this.state.product.title}
             />
-            <Caption>CATEGORY</Caption>
+            <Caption>CATEGORY <Text style={{color: 'red'}}>*</Text></Caption>
             <DropDownMenu
               options={optionsWithEmptyOption}
               selectedOption={selectedOption}
-              onOptionSelected={option => this.updateProductField('categoryId', option)}
+              onOptionSelected={category => this.selectedOption(category)}
               titleProperty={"title"}
               valueProperty={"id"}
             />
             <Caption>DESCRIPTION</Caption>
             <TextInput
               placeholder="Description"
-              onChangeText={value => this.updateProductField('description', value)}
-              value={this.state.product.description}
+              onChangeText={description => this.setState({product: {description, ...this.state.product}})}
+              value={this.state.product.description.split('<br/>').join('\n')}
+              multiline={true}
+              numberOfLines={4}
+              style={{height: 78}}
             />
-            <Caption>PRICE</Caption>
+            <Caption>PRICE <Text style={{color: 'red'}}>*</Text></Caption>
             <TextInput
               placeholder="Price"
-              onChangeText={value => this.updateProductField('price', value)}
-              value={(this.state.product.price !== '')? this.state.product.price.toFixed(2): ''}
+              onChangeText={value => this.changePrice(value)}
+              value={this.state.product.price + ''}
+              keyboardType={'numeric'}
             />
             <Caption>IMAGE URL</Caption>
             <TextInput
               placeholder="Image URL"
-              onChangeText={value => this.updateProductField('imageUrl', value)}
+              onChangeText={imageUrl => this.setState({product: {imageUrl, ...this.state.product}})}
               value={this.state.product.imageUrl}
             />
           </FormGroup>
@@ -143,7 +147,6 @@ class ProductForm extends Component {
 
 const ProductFormFragmentContainer = createFragmentContainer(withNavigation(ProductForm), graphql`
 fragment ProductForm_viewer on Viewer {
-  id
   allCategories {
     edges {
       node {

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 036ebbc9e6444780e286390b287d7e17
+ * @relayHash 11b77df2b4da0202bfec8529e6d4ed34
  */
 
 /* eslint-disable */
@@ -28,7 +28,6 @@ query ProductFormQuery {
 }
 
 fragment ProductForm_viewer on Viewer {
-  id
   allCategories {
     edges {
       node {
@@ -53,7 +52,7 @@ return {
   "operationKind": "query",
   "name": "ProductFormQuery",
   "id": null,
-  "text": "query ProductFormQuery {\n  viewer {\n    ...ProductForm_viewer\n    id\n  }\n}\n\nfragment ProductForm_viewer on Viewer {\n  id\n  allCategories {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n",
+  "text": "query ProductFormQuery {\n  viewer {\n    ...ProductForm_viewer\n    id\n  }\n}\n\nfragment ProductForm_viewer on Viewer {\n  allCategories {\n    edges {\n      node {\n        id\n        title\n      }\n    }\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -94,7 +93,6 @@ return {
         "concreteType": "Viewer",
         "plural": false,
         "selections": [
-          v0,
           {
             "kind": "LinkedField",
             "alias": null,
@@ -135,7 +133,8 @@ return {
                 ]
               }
             ]
-          }
+          },
+          v0
         ]
       }
     ]

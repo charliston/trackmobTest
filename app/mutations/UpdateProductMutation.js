@@ -20,8 +20,6 @@ const mutation = graphql`
   }
 `;
 
-let tempID = 0;
-
 export default function UpdateProductMutation(product, viewerId, callback) {
 
   commitMutation(

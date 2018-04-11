@@ -75,24 +75,6 @@ export default function CreateProductMutation(product, viewerId, callback) {
         const conn = ConnectionHandler.getConnection(userProxy, 'ProductList_allProducts');
         ConnectionHandler.insertEdgeAfter(conn, newEdge);
       },
-      updater: (proxyStore) => {
-        console.log(proxyStore.getRootField('createProduct'));
-        /**/
-
-        // 1 - retrieve the `newProduct` from the server response
-        const createProductField = proxyStore.getRootField('createProduct');
-        const newProduct = createProductField.getLinkedRecord('product');
-
-        console.log(newProduct)
-
-        // 2 - add `newProduct` to the store
-        /** /
-        const userProxy = proxyStore.get(viewerId);
-        const conn = ConnectionHandler.getConnection(userProxy, 'ProductList_allProducts');
-        ConnectionHandler.insertEdgeAfter(conn, newProduct);
-        /**/
-
-      },
     },
   )
 }

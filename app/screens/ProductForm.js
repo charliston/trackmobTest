@@ -102,8 +102,7 @@ class ProductForm extends Component {
 
     if(product.id) {
       // update row
-      console.log(this.state.product.id)
-      // UpdatePostMutation(product, this.props.viewer.id, () => this.props.navigation.goBack(null));
+      UpdatePostMutation(product, this.props.viewer.id, () => this.props.navigation.goBack(null));
     } else {
       // new row
       CreatePostMutation(product, this.props.viewer.id, () => this.props.navigation.goBack(null));

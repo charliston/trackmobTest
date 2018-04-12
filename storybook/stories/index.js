@@ -20,6 +20,10 @@ import Caption from './Components/Caption';
 import Text from './Components/Text';
 import Loading from '../../app/components/Loading'
 
+import FormInput from './Form/Input';
+import FormDropdown from './Form/Dropdown';
+import FormButton from './Form/Button';
+
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
 storiesOf('Header', module)
@@ -80,6 +84,18 @@ storiesOf('Components', module)
   ))
 ;
 
+storiesOf('Form', module)
+  .add('Inputs', () => (
+    <FormInput />
+  ))
+  .add('Dropdown select', () => (
+    <FormDropdown />
+  ))
+  .add('Button', () => (
+    <FormButton buttonIcon={'save'} buttonText={'SAVE'} onPress={action('handle-submit')} />
+
+  ))
+;
 
 /*
 storiesOf('Button', module)

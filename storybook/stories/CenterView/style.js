@@ -4,5 +4,6 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    margin:10,
   },
 };

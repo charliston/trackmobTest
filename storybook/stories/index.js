@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text } from 'react-native';
 
 import { storiesOf } from '@storybook/react-native';
 import { action } from '@storybook/addon-actions';
@@ -14,23 +13,28 @@ import HeaderLeftTitleRight from './Header/LeftTitleRight';
 import HeaderTitle from './Header/Title';
 import HeaderTitleRight from './Header/TitleRight';
 
+import Icon from './Components/Icon';
+import Title from './Components/Title';
+import Subtitle from './Components/Subtitle';
+import Caption from './Components/Caption';
+import Text from './Components/Text';
 
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
-storiesOf('Components', module)
-  .add('Header title', () => (
+storiesOf('Header', module)
+  .add('title', () => (
     <HeaderTitle />
   ))
-  .add('Header with back button', () => (
+  .add('with back button', () => (
     <HeaderLeftTitle />
   ))
-  .add('Header with action button', () => (
+  .add('with action button', () => (
     <HeaderTitleRight />
   ))
-  .add('Header with back and action buttons', () => (
+  .add('with back and action buttons', () => (
     <HeaderLeftTitleRight />
   ))
-  .add('Header action buttons', () => (
+  .add('action buttons', () => (
     <CenterView>
       <HeaderButton image={'add'} />
       <HeaderButton image={'edit'} />
@@ -41,6 +45,38 @@ storiesOf('Components', module)
   ))
 ;
 
+storiesOf('Components', module)
+  .add('Font icon', () => (
+    <CenterView>
+      <Icon buttonImage={'watch'} color={'#999'} size={10} />
+      <Icon buttonImage={'help'} color={'#f00'} size={20} />
+      <Icon buttonImage={'done'} color={'#123'} size={30} />
+      <Icon buttonImage={'grade'} color={'#008'} size={40} />
+    </CenterView>
+  ))
+  .add('Title', () => (
+    <CenterView>
+      <Title>Lorem ipsum dolor sit amet</Title>
+    </CenterView>
+  ))
+  .add('Subtitle', () => (
+    <CenterView>
+      <Subtitle>Donec malesuada nisl eget felis imperdiet faucibus</Subtitle>
+    </CenterView>
+  ))
+  .add('Caption', () => (
+    <CenterView>
+      <Caption>Nunc vulputate ante sit amet tellus aliquam</Caption>
+    </CenterView>
+  ))
+  .add('Text', () => (
+    <CenterView>
+      <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quam ante, bibendum molestie eleifend a, scelerisque ac neque. Nam in laoreet ante, eu fringilla turpis. Cras imperdiet a diam nec imperdiet. Donec ut ex egestas, volutpat lectus ac, scelerisque ligula. Morbi nibh sapien, ornare vel maximus in, fermentum at dui. Donec risus nunc, tristique elementum mollis vel, maximus in tellus. Cras eget fermentum nisl.</Text>
+    </CenterView>
+  ))
+;
+
+/*
 storiesOf('Button', module)
   .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
   .add('with text', () => (
@@ -53,3 +89,4 @@ storiesOf('Button', module)
       <Text>😀 😎 👍 💯</Text>
     </Button>
   ));
+*/

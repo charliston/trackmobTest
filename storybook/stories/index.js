@@ -18,6 +18,7 @@ import Title from './Components/Title';
 import Subtitle from './Components/Subtitle';
 import Caption from './Components/Caption';
 import Text from './Components/Text';
+import Loading from '../../app/components/Loading'
 
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
@@ -74,7 +75,11 @@ storiesOf('Components', module)
       <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quam ante, bibendum molestie eleifend a, scelerisque ac neque. Nam in laoreet ante, eu fringilla turpis. Cras imperdiet a diam nec imperdiet. Donec ut ex egestas, volutpat lectus ac, scelerisque ligula. Morbi nibh sapien, ornare vel maximus in, fermentum at dui. Donec risus nunc, tristique elementum mollis vel, maximus in tellus. Cras eget fermentum nisl.</Text>
     </CenterView>
   ))
+  .add('Loading', () => (
+    <Loading isLoading={true} />
+  ))
 ;
+
 
 /*
 storiesOf('Button', module)

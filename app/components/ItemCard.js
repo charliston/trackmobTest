@@ -9,6 +9,7 @@ const ItemCard = ({ onPress, product }) => {
   const styles = StyleSheet.create({
     image:{ width: (180 / 375) * width, height: (85 / 375) * width}
   });
+  const price = product.price.toFixed(2);
 
   return (
     <TouchableOpacity
@@ -26,10 +27,7 @@ const ItemCard = ({ onPress, product }) => {
           <Subtitle>{product.title}</Subtitle>
           <View styleName="horizontal v-center space-between">
             <Caption>
-              {product.price.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-              })}
+              ${price}
             </Caption>
             <Caption>{product.category.title}</Caption>
           </View>

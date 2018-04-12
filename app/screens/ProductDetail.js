@@ -5,6 +5,7 @@ import environment from '../Enviroment';
 import Loading from '../components/Loading';
 import { type ProductDetail_query } from './__generated__/ProductDetail_query.graphql';
 import { Screen, ImageBackground, Tile, Title, Overlay, Subtitle, ScrollView, View, Text } from '@shoutem/ui';
+import ItemFeatured from '../components/ItemFeatured';
 
 type Props = {
   query: ProductDetail_query,
@@ -23,28 +24,10 @@ class ProductDetail extends Component<void, Props, any> {
   render() {
     const { node } = this.props.query;
 
-    let { width } = Dimensions.get('window');
     return (
       <Screen>
         <ScrollView>
-          <ImageBackground
-            styleName="large-banner"
-            style={{ width, height: (238 / 375) * width }}
-            source={{ uri: node.imageUrl }}
-          >
-            <Tile>
-              <Title styleName="md-gutter-bottom">{node.title}</Title>
-              <Subtitle styleName="small-gutter">{node.category.title}</Subtitle>
-              <Overlay styleName="solid-bright">
-                <Subtitle styleName="sm-gutter-horizontal">
-                  {node.price.toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  })}
-                </Subtitle>
-              </Overlay>
-            </Tile>
-          </ImageBackground>
+          <ItemFeatured onPress={() => {}} product={node}/>
           <View style={{margin:10}}>
             <Text>
               {node.description.split('<br/>').join('\n')}

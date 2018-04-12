@@ -6,6 +6,7 @@ import { TouchableOpacity, ImageBackground, Tile, Title, Divider, Subtitle, Over
 const ItemFeatured = ({ onPress, product }) => {
 
   let { width } = Dimensions.get('window');
+  const price = product.price.toFixed(2);
 
   return (
     <TouchableOpacity style={{ flex: 1 }} onPress={onPress} >
@@ -18,10 +19,7 @@ const ItemFeatured = ({ onPress, product }) => {
           <Subtitle styleName="small-gutter">{product.category.title}</Subtitle>
           <Overlay styleName="solid-bright">
             <Subtitle styleName="sm-gutter-horizontal">
-              {product.price.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-              })}
+              ${price}
             </Subtitle>
           </Overlay>
         </Tile>

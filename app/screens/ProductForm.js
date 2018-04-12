@@ -85,7 +85,7 @@ class ProductForm extends Component {
     }
 
     product.price = this.validationPrice(product.price);
-    if(isNaN(product.price)) {
+    if(product.price === '') {
       msg.push('Price');
     }
 
@@ -111,8 +111,8 @@ class ProductForm extends Component {
   };
 
   validationPrice(value) {
-    value = value+"".match(/^\d+(\.\d{1,2})?$/);
-    return parseFloat(value);
+    value = parseFloat(value+"".match(/^\d+(\.\d{1,2})?$/));
+    return ( isNaN(value)? '': value );
   }
 
   selectedOption(option) {

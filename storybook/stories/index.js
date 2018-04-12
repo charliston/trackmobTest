@@ -24,6 +24,11 @@ import FormInput from './Form/Input';
 import FormDropdown from './Form/Dropdown';
 import FormButton from './Form/Button';
 
+import ItemCard from './Product/Card';
+import ItemFeatured from './Product/Featured';
+import ProductList from './Product/List';
+import ProductDetail from './Product/Detail';
+
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
 
 storiesOf('Header', module)
@@ -97,17 +102,58 @@ storiesOf('Form', module)
   ))
 ;
 
-/*
-storiesOf('Button', module)
-  .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)
-  .add('with text', () => (
-    <Button onPress={action('clicked-text')}>
-      <Text>Hello Button</Text>
-    </Button>
+edges = [];
+edges[0] = {
+  node: {
+    id: "p1",
+    title: "Nunc quis consequat diam",
+    description: "Uncle Jailbird Joey? Good evening, I'm Doctor Emmett Brown. I'm standing on the parking lot of Twin Pines Mall. It's Saturday morning, October 26, 1985, 1:18 a.m. and this is temporal experiment number one. C'mon, Einy, hey hey boy, get in there, that a boy, in you go, get down, that's it. Are those my clocks I hear? Doc, look, all we need is a little plutonium. We're gonna take a little break but we'll be back in a while so, don't nobody go no where.<br/><br/>Well, bring her along. This concerns her too. Marty, this may seem a little foreward, but I was wondering if you would ask me to the Enchantment Under The Sea Dance on Saturday. Doc. I'm really gonna miss you. Doc, about the future- What?",
+    price: 999.99,
+    imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg",
+    category: {id: "c1", title: "Cras a lacus accumsan"},
+  }
+};
+edges[1] = {
+  node: {
+    id: "p2",
+    title: "Cras non mauris ac est",
+    description: "Uncle Jailbird Joey? Good evening, I'm Doctor Emmett Brown. I'm standing on the parking lot of Twin Pines Mall. It's Saturday morning, October 26, 1985, 1:18 a.m. and this is temporal experiment number one. C'mon, Einy, hey hey boy, get in there, that a boy, in you go, get down, that's it. Are those my clocks I hear? Doc, look, all we need is a little plutonium. We're gonna take a little break but we'll be back in a while so, don't nobody go no where.<br/><br/>Well, bring her along. This concerns her too. Marty, this may seem a little foreward, but I was wondering if you would ask me to the Enchantment Under The Sea Dance on Saturday. Doc. I'm really gonna miss you. Doc, about the future- What?",
+    price: 999.99,
+    imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg",
+    category: {id: "c1", title: "Cras a lacus accumsan"},
+  }
+};
+edges[2] = {
+  node: {
+    id: "p3",
+    title: "Cras vel nibh ac elit",
+    description: "Uncle Jailbird Joey? Good evening, I'm Doctor Emmett Brown. I'm standing on the parking lot of Twin Pines Mall. It's Saturday morning, October 26, 1985, 1:18 a.m. and this is temporal experiment number one. C'mon, Einy, hey hey boy, get in there, that a boy, in you go, get down, that's it. Are those my clocks I hear? Doc, look, all we need is a little plutonium. We're gonna take a little break but we'll be back in a while so, don't nobody go no where.<br/><br/>Well, bring her along. This concerns her too. Marty, this may seem a little foreward, but I was wondering if you would ask me to the Enchantment Under The Sea Dance on Saturday. Doc. I'm really gonna miss you. Doc, about the future- What?",
+    price: 999.99,
+    imageUrl: "https://graphiceat.com/wp-content/uploads/2017/03/PSD-soda-can.jpg",
+    category: {id: "c1", title: "Cras a lacus accumsan"},
+  }
+};
+const productList = {
+  allProducts: {
+    edges
+  }
+};
+
+storiesOf('Product', module)
+  .add('Item card', () => (
+    <CenterView>
+      <ItemCard onPress={action('open-product')} product={edges[0].node} />
+    </CenterView>
   ))
-  .add('with some emoji', () => (
-    <Button onPress={action('clicked-emoji')}>
-      <Text>😀 😎 👍 💯</Text>
-    </Button>
-  ));
-*/
+  .add('Item featured', () => (
+    <CenterView>
+      <ItemFeatured onPress={action('open-product')} product={edges[0].node} />
+    </CenterView>
+  ))
+  .add('list', () => (
+    <ProductList products={productList} />
+  ))
+  .add('details', () => (
+    <ProductDetail product={edges[0]} />
+  ))
+;

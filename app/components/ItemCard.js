@@ -2,7 +2,7 @@ import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Image from 'react-native-image-progress';
-import { Text, Screen, TouchableOpacity, ImageBackground, Divider, Tile, Title, Subtitle, Card, View, Caption, NavigationBar, ListView, GridRow } from '@shoutem/ui';
+import { TouchableOpacity, Subtitle, Card, View, Caption } from '@shoutem/ui';
 
 const ItemCard = ({ onPress, product }) => {
   let { width } = Dimensions.get('window');

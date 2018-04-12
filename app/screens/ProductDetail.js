@@ -11,7 +11,7 @@ type Props = {
   query: ProductDetail_query,
 };
 
-class ProductDetail extends Component<void, Props, any> {
+export class ProductDetail extends Component<void, Props, any> {
   constructor(props) {
     super(props);
     // Event Listener for orientation changes

@@ -18,7 +18,7 @@ type State = {
   isFetchingTop: boolean,
 };
 
-class ProductList extends Component<any, Props, State> {
+export class ProductList extends Component<any, Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,6 +68,7 @@ class ProductList extends Component<any, Props, State> {
   renderItem = ({ item, index }) => {
     if (index === 0) {
       const { node } = item[0];
+      console.log(node);
       return (
         <ItemFeatured onPress={() => this.goToProductDetail(node)} product={node} key={node.id} />
       );
@@ -92,6 +93,8 @@ class ProductList extends Component<any, Props, State> {
 
   render() {
     const { allProducts } = this.props.viewer;
+
+    console.log(this.props.viewer);
 
     let isFirstArticle = true;
     const groupedData = GridRow.groupByRows(allProducts.edges, 2, () => {

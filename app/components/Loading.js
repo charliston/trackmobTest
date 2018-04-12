@@ -9,14 +9,12 @@ export default function Loading(props) {
           <Text>Loader timed out!</Text>
         </View>
       );
-    } else if (props.pastDelay) {
+    } else {
       return (
         <View style={[styles.container, styles.horizontal]}>
           <ActivityIndicator size="large" color="#037aff" />
         </View>
       );
-    } else {
-      return null;
     }
   } else if (props.error) {
     return (

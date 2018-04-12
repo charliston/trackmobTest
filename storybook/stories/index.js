@@ -5,11 +5,41 @@ import { storiesOf } from '@storybook/react-native';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
 
-import Button from './Button';
 import CenterView from './CenterView';
 import Welcome from './Welcome';
 
+import HeaderButton from './Header/Button';
+import HeaderLeftTitle from './Header/LeftTitle';
+import HeaderLeftTitleRight from './Header/LeftTitleRight';
+import HeaderTitle from './Header/Title';
+import HeaderTitleRight from './Header/TitleRight';
+
+
 storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />);
+
+storiesOf('Components', module)
+  .add('Header title', () => (
+    <HeaderTitle />
+  ))
+  .add('Header with back button', () => (
+    <HeaderLeftTitle />
+  ))
+  .add('Header with action button', () => (
+    <HeaderTitleRight />
+  ))
+  .add('Header with back and action buttons', () => (
+    <HeaderLeftTitleRight />
+  ))
+  .add('Header action buttons', () => (
+    <CenterView>
+      <HeaderButton image={'add'} />
+      <HeaderButton image={'edit'} />
+      <HeaderButton image={'delete'} />
+      <HeaderButton image={'book'} />
+      <HeaderButton image={'shopping-cart'} />
+    </CenterView>
+  ))
+;
 
 storiesOf('Button', module)
   .addDecorator(getStory => <CenterView>{getStory()}</CenterView>)

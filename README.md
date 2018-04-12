@@ -52,4 +52,4 @@ Like `npm start`, but also attempts to open your app on a connected Android devi
 3. Make sure that you can run adb from your terminal.
 
 #### `npm run storybook`
-Runs the app in development mode.
+Runs the app in Storybook mode.
